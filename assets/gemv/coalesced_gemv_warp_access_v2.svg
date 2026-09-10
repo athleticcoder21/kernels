@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="760" viewBox="0 0 1400 760" role="img" aria-labelledby="title desc">
+  <title id="title">One warp reads one row in contiguous chunks</title>
+  <desc id="desc">All 32 threads in a warp share one matrix row. On the first pass they read columns zero through thirty-one, and on the second pass they read columns thirty-two through sixty-three. Each pass accesses adjacent values that occupy four contiguous 32-byte sectors.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0 0L9 4.5 0 9z" fill="#0f766e"/></marker>
+    <style>.h{font:700 30px system-ui,sans-serif;fill:#102a43}.l{font:700 21px system-ui,sans-serif;fill:#102a43}.s{font:400 16px system-ui,sans-serif;fill:#52606d}.c{font:600 16px system-ui,sans-serif;fill:#102a43;text-anchor:middle}.i{font:500 14px system-ui,sans-serif;fill:#486581;text-anchor:middle}.good{font:700 18px system-ui,sans-serif;fill:#047857;text-anchor:middle}</style>
+  </defs>
+  <rect width="1400" height="760" fill="#fbfdff"/>
+  <text x="70" y="58" class="h">One warp reads one row, 32 adjacent values at a time</text>
+  <text x="70" y="89" class="s">All 32 threads share the same row. Only the columns assigned to them change on each pass through the loop.</text>
+
+  <text x="70" y="148" class="l">First pass</text>
+  <text x="205" y="148" class="s">threads 0–31 read columns 0–31</text>
+  <g fill="#dbeafe" stroke="#2563eb" stroke-width="1.6"><rect x="70" y="175" width="125" height="76"/><rect x="195" y="175" width="125" height="76"/><rect x="320" y="175" width="125" height="76"/><rect x="445" y="175" width="125" height="76"/><rect x="570" y="175" width="125" height="76"/><rect x="695" y="175" width="125" height="76"/><rect x="820" y="175" width="125" height="76"/><rect x="945" y="175" width="125" height="76"/><rect x="1070" y="175" width="125" height="76"/><rect x="1195" y="175" width="135" height="76"/></g>
+  <g class="c"><text x="132" y="220">A[row, 0]</text><text x="257" y="220">A[row, 1]</text><text x="382" y="220">A[row, 2]</text><text x="507" y="220">A[row, 3]</text><text x="632" y="220">A[row, 4]</text><text x="757" y="220">…</text><text x="882" y="220">A[row, 29]</text><text x="1007" y="220">A[row, 30]</text><text x="1132" y="220">A[row, 31]</text><text x="1262" y="220">next chunk</text></g>
+  <g class="i"><text x="132" y="277">thread 0</text><text x="257" y="277">thread 1</text><text x="382" y="277">thread 2</text><text x="507" y="277">thread 3</text><text x="632" y="277">thread 4</text><text x="757" y="277">…</text><text x="882" y="277">thread 29</text><text x="1007" y="277">thread 30</text><text x="1132" y="277">thread 31</text></g>
+  <path d="M85 310H1205" stroke="#0f766e" stroke-width="3" marker-end="url(#arrow)"/>
+  <text x="645" y="340" class="good">one instruction → 32 consecutive matrix elements</text>
+
+  <text x="70" y="400" class="l">Second pass</text>
+  <text x="225" y="400" class="s">the same threads move forward by 32 and read columns 32–63</text>
+  <g fill="#dcfce7" stroke="#16a34a" stroke-width="1.6"><rect x="70" y="427" width="125" height="76"/><rect x="195" y="427" width="125" height="76"/><rect x="320" y="427" width="125" height="76"/><rect x="445" y="427" width="125" height="76"/><rect x="570" y="427" width="125" height="76"/><rect x="695" y="427" width="125" height="76"/><rect x="820" y="427" width="125" height="76"/><rect x="945" y="427" width="125" height="76"/><rect x="1070" y="427" width="125" height="76"/><rect x="1195" y="427" width="135" height="76"/></g>
+  <g class="c"><text x="132" y="472">A[row, 32]</text><text x="257" y="472">A[row, 33]</text><text x="382" y="472">A[row, 34]</text><text x="507" y="472">A[row, 35]</text><text x="632" y="472">A[row, 36]</text><text x="757" y="472">…</text><text x="882" y="472">A[row, 61]</text><text x="1007" y="472">A[row, 62]</text><text x="1132" y="472">A[row, 63]</text><text x="1262" y="472">next chunk</text></g>
+  <g class="i"><text x="132" y="529">thread 0</text><text x="257" y="529">thread 1</text><text x="382" y="529">thread 2</text><text x="507" y="529">thread 3</text><text x="632" y="529">thread 4</text><text x="757" y="529">…</text><text x="882" y="529">thread 29</text><text x="1007" y="529">thread 30</text><text x="1132" y="529">thread 31</text></g>
+  <path d="M85 562H1205" stroke="#0f766e" stroke-width="3" marker-end="url(#arrow)"/>
+  <text x="645" y="592" class="good">one instruction → the next 32 consecutive matrix elements</text>
+
+  <text x="70" y="658" class="l">What memory sees</text>
+  <g fill="#ccfbf1" stroke="#0f766e" stroke-width="1.6"><rect x="300" y="622" width="180" height="68"/><rect x="480" y="622" width="180" height="68"/><rect x="660" y="622" width="180" height="68"/><rect x="840" y="622" width="180" height="68"/></g>
+  <g class="c"><text x="390" y="663">32-byte sector</text><text x="570" y="663">32-byte sector</text><text x="750" y="663">32-byte sector</text><text x="930" y="663">32-byte sector</text></g>
+  <text x="1180" y="648" class="good">128 useful bytes</text><text x="1180" y="677" class="good">128 transferred bytes</text>
+  <rect x="70" y="710" width="1260" height="40" rx="10" fill="#ecfdf5" stroke="#a7f3d0"/><text x="700" y="737" class="good">neighboring threads → neighboring addresses → coalesced access</text>
+</svg>

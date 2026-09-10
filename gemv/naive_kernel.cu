@@ -11,8 +11,8 @@ int ceil_division(int M, int N){
 
 
 __global__ void naive_gemv_kernel(
-    float* __restrict__ A,
-    float* __restrict__ x,
+    const float* __restrict__ A,
+    const float* __restrict__ x,
     float* __restrict__ y,
     int M,
     int N
@@ -23,7 +23,7 @@ __global__ void naive_gemv_kernel(
         float sum = 0.f;
 
         for (int column = 0; column < N; ++column) {
-            sum = A[row * N + column] * x[column];
+            sum += A[row * N + column] * x[column];
         }
 
         y[row] = sum;
@@ -32,8 +32,8 @@ __global__ void naive_gemv_kernel(
 
 
 void launch_kernel(
-    float* __restrict__ A,
-    float* __restrict__ x,
+    const float* __restrict__ A,
+    const float* __restrict__ x,
     float* __restrict__ y,
     int M,
     int N    

@@ -1,0 +1,31 @@
+<div class="base-grid appendix-entry">
+  <h3 style="grid-column: 0;">Citation</h3>
+  <p class="author-footnote">For attribution in academic contexts, please cite this work as:</p>
+
+  <div class="author-footnote">
+  {% capture citation_code -%}
+  ```text
+    Mishra, Anshuman. "Making Models Fast." Online, 2026.
+  ```
+  {%- endcapture %}
+  {{ citation_code | markdownify }}
+  </div>
+
+  <p class="author-footnote">or as a BibTeX entry:</p>
+
+  <div class="author-footnote">
+  {% capture citation_code -%}
+  ```bibtex
+    @book{making-models-fast,
+      title = {Making Models Fast},
+      author = {Mishra, Anshuman},
+      howpublished = {Online},
+      url = {https://athleticcoder21.github.io/kernels/},
+      year = {2026}
+    }
+  ```
+  {%- endcapture %}
+  {{ citation_code | markdownify }}
+  </div>
+
+</div>

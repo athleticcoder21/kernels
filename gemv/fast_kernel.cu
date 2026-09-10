@@ -1,6 +1,7 @@
 // GEMV Coalesced Warp Implementation
 
 #include <cuda_runtime.h>
+#include <cassert>
 #include <cstdio>
 #include <cstdlib>
 
@@ -12,8 +13,8 @@ __device__ __forceinline__ float warpReduceSum(float value) {
 }
 
 __global__ void performant_gemv_kernel(
-    float* __restrict__ A,
-    float* __restrict__ x,
+    const float* __restrict__ A,
+    const float* __restrict__ x,
     float* __restrict__ y,
     int M,
     int N    
@@ -43,8 +44,8 @@ __global__ void performant_gemv_kernel(
 
 
 void launch_kernel(
-    float* __restrict__ A,
-    float* __restrict__ x,
+    const float* __restrict__ A,
+    const float* __restrict__ x,
     float* __restrict__ y,
     int M,
     int N    
