@@ -7,7 +7,7 @@ ninja.data = [{
     title: "",
     section: "Navigation",
     handler: () => {
-      window.location.href = "/kernels/";
+      window.location.href = "/inference-book/";
     },
   },{id: "dropdown-part-0-introduction",
               title: "Part 0. Introduction",

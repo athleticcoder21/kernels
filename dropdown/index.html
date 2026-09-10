@@ -17,7 +17,7 @@
   
   
     
-      Sections | Making Models Fast
+      Sections | How to make your models fast
     
   
 </title>
@@ -33,14 +33,14 @@
 
 
   <!-- OpenGraph -->
-  <meta property="og:site_name" content="Making Models Fast">
+  <meta property="og:site_name" content="How to make your models fast">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Sections">
-  <meta property="og:url" content="https://athleticcoder21.github.io/kernels/dropdown/">
+  <meta property="og:url" content="https://athleticcoder21.github.io/inference-book/dropdown/">
   <meta property="og:description" content="A systems-first book about making LLM inference fast on modern hardware.
 ">
   
-    <meta property="og:image" content="https://athleticcoder21.github.io/kernels/assets/gemv/image1-v2.png">
+    <meta property="og:image" content="https://athleticcoder21.github.io/inference-book/assets/gemv/image1-v2.png">
   
   <meta property="og:locale" content="en">
 
@@ -50,7 +50,7 @@
   <meta name="twitter:description" content="A systems-first book about making LLM inference fast on modern hardware.
 ">
   
-    <meta name="twitter:image" content="https://athleticcoder21.github.io/kernels/assets/gemv/image1-v2.png">
+    <meta name="twitter:image" content="https://athleticcoder21.github.io/inference-book/assets/gemv/image1-v2.png">
   
   
 
@@ -99,8 +99,8 @@
     {
         "@context": "https://schema.org",
         "@type": "WebSite",
-        "url": "https://athleticcoder21.github.io/kernels/dropdown/",
-        "name": "Making Models Fast",
+        "url": "https://athleticcoder21.github.io/inference-book/dropdown/",
+        "name": "How to make your models fast",
         "headline": "Sections",
         
         "description": "A systems-first book about making LLM inference fast on modern hardware.\n"
@@ -110,7 +110,7 @@
 
 
 <!-- Bootstrap & MDB -->
-<link rel="stylesheet" href="/kernels/assets/css/bootstrap.min.css?a4b3f509e79c54a512b890d73235ef04">
+<link rel="stylesheet" href="/inference-book/assets/css/bootstrap.min.css?a4b3f509e79c54a512b890d73235ef04">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdbootstrap@4.20.0/css/mdb.min.css" integrity="sha256-jpjYvU3G3N6nrrBwXJoVEYI/0zw8htfFnhT9ljN3JJw=" crossorigin="anonymous">
 
 
@@ -119,12 +119,12 @@
 <!-- Roboto is self-hosted (see _sass/_fonts.scss). Preload it so it's ready at
      first paint; with font-display: optional a late font is skipped rather than
      swapped in, so the page never reflows because of fonts. -->
-<link rel="preload" as="font" type="font/woff2" crossorigin href="/kernels/assets/fonts/roboto/roboto-latin.woff2">
-<link defer rel="stylesheet" href="/kernels/assets/css/academicons.min.css?f0b7046b84e425c55f3463ac249818f5">
-<link defer rel="stylesheet" href="/kernels/assets/css/scholar-icons.css?62b2ac103a88034e6882a5be5f3e2772">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="/inference-book/assets/fonts/roboto/roboto-latin.woff2">
+<link defer rel="stylesheet" href="/inference-book/assets/css/academicons.min.css?f0b7046b84e425c55f3463ac249818f5">
+<link defer rel="stylesheet" href="/inference-book/assets/css/scholar-icons.css?62b2ac103a88034e6882a5be5f3e2772">
 
 <!-- Code Syntax Highlighting -->
-<link defer rel="stylesheet" href="/kernels/assets/css/jekyll-pygments-themes-vs.css?4ee1a2facd1a8a76347f4bd43a740500" media="" id="highlight_theme_light">
+<link defer rel="stylesheet" href="/inference-book/assets/css/jekyll-pygments-themes-vs.css?4ee1a2facd1a8a76347f4bd43a740500" media="" id="highlight_theme_light">
 
 
 
@@ -133,18 +133,18 @@
 
 
 
-  <link rel="icon" href="/kernels/assets/img/favicon.ico?40fa984da00a7d776e79162fb29402f2" sizes="48x48">
-  <link rel="icon" type="image/png" href="/kernels/assets/img/favicon-96x96.png?6fad83cd890cb60f9e27143afa90eefd" sizes="96x96">
-  <link rel="icon" type="image/png" href="/kernels/assets/img/favicon-192x192.png?3fdfb758795130ba54a94ab468f6e7ec" sizes="192x192">
-  <link rel="apple-touch-icon" href="/kernels/assets/img/apple-touch-icon.png?0e2a9fab4bca21b912aa5871abd33c2a">
+  <link rel="icon" href="/inference-book/assets/img/favicon.ico?40fa984da00a7d776e79162fb29402f2" sizes="48x48">
+  <link rel="icon" type="image/png" href="/inference-book/assets/img/favicon-96x96.png?6fad83cd890cb60f9e27143afa90eefd" sizes="96x96">
+  <link rel="icon" type="image/png" href="/inference-book/assets/img/favicon-192x192.png?3fdfb758795130ba54a94ab468f6e7ec" sizes="192x192">
+  <link rel="apple-touch-icon" href="/inference-book/assets/img/apple-touch-icon.png?0e2a9fab4bca21b912aa5871abd33c2a">
 
-<link rel="stylesheet" href="/kernels/assets/css/main.css?d41d8cd98f00b204e9800998ecf8427e">
-<link rel="canonical" href="https://athleticcoder21.github.io/kernels/dropdown/">
+<link rel="stylesheet" href="/inference-book/assets/css/main.css?d41d8cd98f00b204e9800998ecf8427e">
+<link rel="canonical" href="https://athleticcoder21.github.io/inference-book/dropdown/">
 
 <!-- Dark Mode -->
-<script src="/kernels/assets/js/theme.js?9a0c749ec5240d9cda97bc72359a72c0"></script>
+<script src="/inference-book/assets/js/theme.js?9a0c749ec5240d9cda97bc72359a72c0"></script>
 
-  <link defer rel="stylesheet" href="/kernels/assets/css/jekyll-pygments-themes-native.css?5847e5ed4a4568527aa6cfab446049ca" media="none" id="highlight_theme_dark">
+  <link defer rel="stylesheet" href="/inference-book/assets/css/jekyll-pygments-themes-native.css?5847e5ed4a4568527aa6cfab446049ca" media="none" id="highlight_theme_dark">
   <script>
     initTheme();
   </script>
@@ -200,8 +200,8 @@
   <nav id="navbar" class="navbar navbar-light navbar-expand-sm fixed-top" role="navigation">
     <div class="container">
       
-        <a class="navbar-brand title font-weight-lighter" href="/kernels">
-          Making Models Fast
+        <a class="navbar-brand title font-weight-lighter" href="/inference-book">
+          How to make your models fast
         </a>
       
       <!-- Navbar Toggle -->
@@ -222,7 +222,7 @@
 
           <!-- About -->
           <li class="nav-item ">
-            <a class="nav-link" href="/kernels/">
+            <a class="nav-link" href="/inference-book/">
               
             </a>
           </li>
@@ -263,11 +263,11 @@
                   <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                     
                       
-                        <a class="dropdown-item " href="/kernels/index">Part 0. Introduction</a>
+                        <a class="dropdown-item " href="/inference-book/index">Part 0. Introduction</a>
                       
                     
                       
-                        <a class="dropdown-item " href="/kernels/gemv">Part 1. Making GEMV Fast</a>
+                        <a class="dropdown-item " href="/inference-book/gemv">Part 1. Making GEMV Fast</a>
                       
                     
                   </div>
@@ -336,7 +336,7 @@
       © Copyright 2026
       
       
-      . Making Models Fast by Anshuman Mishra.
+      . How to make your models fast by Anshuman Mishra.
 
       
       
@@ -350,14 +350,14 @@
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 
 <!-- Bootsrap & MDB scripts -->
-<script src="/kernels/assets/js/bootstrap.bundle.min.js"></script>
+<script src="/inference-book/assets/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.20.0/js/mdb.min.js" integrity="sha256-NdbiivsvWt7VYCt6hYNT3h/th9vSTL4EDWeGs5SN3DA=" crossorigin="anonymous"></script>
 
 
   <!-- Masonry & imagesLoaded -->
   <script defer src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js" integrity="sha256-Nn1q/fx0H7SNLZMQ5Hw5JLaTRZp0yILA/FRexe19VdI=" crossorigin="anonymous"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/imagesloaded@5.0.0/imagesloaded.pkgd.min.js" integrity="sha256-htrLFfZJ6v5udOG+3kNLINIKh2gvoKqwEhHYfTTMICc=" crossorigin="anonymous"></script>
-  <script defer src="/kernels/assets/js/masonry.js?a0db7e5d5c70cc3252b3138b0c91dcaf" type="text/javascript"></script>
+  <script defer src="/inference-book/assets/js/masonry.js?a0db7e5d5c70cc3252b3138b0c91dcaf" type="text/javascript"></script>
 
 
 
@@ -381,7 +381,7 @@
 
   <!-- Medium Zoom JS -->
   <script defer src="https://cdn.jsdelivr.net/npm/medium-zoom@1.1.0/dist/medium-zoom.min.js" integrity="sha256-ZgMyDAIYDYGxbcpJcfUnYwNevG/xi9OHKaR/8GK+jWc=" crossorigin="anonymous"></script>
-  <script defer src="/kernels/assets/js/zoom.js?85ddb88934d28b74e78031fd54cf8308"></script>
+  <script defer src="/inference-book/assets/js/zoom.js?85ddb88934d28b74e78031fd54cf8308"></script>
 
 
 
@@ -389,12 +389,12 @@
 
 
 <!-- Load Common JS -->
-<script src="/kernels/assets/js/no_defer.js?2781658a0a2b13ed609542042a859126"></script>
-<script defer src="/kernels/assets/js/common.js?e0514a05c5c95ac1a93a8dfd5249b92e"></script>
-<script defer src="/kernels/assets/js/copy_code.js?12775fdf7f95e901d7119054556e495f" type="text/javascript"></script>
+<script src="/inference-book/assets/js/no_defer.js?2781658a0a2b13ed609542042a859126"></script>
+<script defer src="/inference-book/assets/js/common.js?e0514a05c5c95ac1a93a8dfd5249b92e"></script>
+<script defer src="/inference-book/assets/js/copy_code.js?12775fdf7f95e901d7119054556e495f" type="text/javascript"></script>
 
 <!-- Jupyter Open External Links New Tab -->
-<script defer src="/kernels/assets/js/jupyter_new_tab.js?d9f17b6adc2311cbabd747f4538bb15f"></script>
+<script defer src="/inference-book/assets/js/jupyter_new_tab.js?d9f17b6adc2311cbabd747f4538bb15f"></script>
 
 <!-- Badges -->
 
@@ -408,7 +408,7 @@
   <!-- MathJax -->
   <script defer type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" integrity="sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI=" crossorigin="anonymous"></script>
   
-    <script src="/kernels/assets/js/mathjax-setup.js?70d799092f862ad98c7876aa47712e20"></script>
+    <script src="/inference-book/assets/js/mathjax-setup.js?70d799092f862ad98c7876aa47712e20"></script>
     <script defer src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6" crossorigin="anonymous"></script>
   
 
@@ -421,7 +421,7 @@
 
 
   <!-- Scrolling Progress Bar -->
-  <script defer src="/kernels/assets/js/progress-bar.js?2f30e0e6801ea8f5036fa66e1ab0a71a" type="text/javascript"></script>
+  <script defer src="/inference-book/assets/js/progress-bar.js?2f30e0e6801ea8f5036fa66e1ab0a71a" type="text/javascript"></script>
 
 
 
@@ -430,7 +430,7 @@
 
 
   <!-- Back to Top -->
-  <script src="/kernels/assets/js/vanilla-back-to-top.min.js?f40d453793ff4f64e238e420181a1d17"></script>
+  <script src="/inference-book/assets/js/vanilla-back-to-top.min.js?f40d453793ff4f64e238e420181a1d17"></script>
   <script>
     addBackToTop();
   </script>

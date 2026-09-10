@@ -1,4 +1,4 @@
 User-agent: *
 Disallow:
 
-Sitemap: https://athleticcoder21.github.io/kernels/sitemap.xml
+Sitemap: https://athleticcoder21.github.io/inference-book/sitemap.xml

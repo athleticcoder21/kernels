@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
-<loc>https://athleticcoder21.github.io/kernels/dropdown/</loc>
+<loc>https://athleticcoder21.github.io/inference-book/dropdown/</loc>
 </url>
 <url>
-<loc>https://athleticcoder21.github.io/kernels/gemv/</loc>
+<loc>https://athleticcoder21.github.io/inference-book/gemv/</loc>
 </url>
 <url>
-<loc>https://athleticcoder21.github.io/kernels/</loc>
+<loc>https://athleticcoder21.github.io/inference-book/</loc>
 </url>
 </urlset>
