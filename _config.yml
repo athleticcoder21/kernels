@@ -2,7 +2,7 @@
 # Site settings
 # -----------------------------------------------------------------------------
 
-title: Making Models Fast # the website title (if blank, full name will be used instead)
+title: How to make your models fast # the website title (if blank, full name will be used instead)
 first_name:
 middle_name:
 last_name:
@@ -11,13 +11,13 @@ contact_note: >
 description: > # the ">" symbol means to ignore newlines until "footer_text:"
   A systems-first book about making LLM inference fast on modern hardware.
 footer_text: >
-  Making Models Fast by Anshuman Mishra.
+  How to make your models fast by Anshuman Mishra.
 keywords: cuda, gpu, kernels, llm, inference, performance optimization
 lang: en # the language of your site (for example: en, fr, cn, ru, etc.)
 icon: favicon.ico # the emoji used as the favicon (alternatively, provide image name in /assets/img/)
 
 url: https://athleticcoder21.github.io # the base hostname & protocol for your site
-baseurl: "/kernels" # the subpath of the GitHub Pages site
+baseurl: "/inference-book" # the subpath of the GitHub Pages site
 last_updated: false # set to true if you want to display last updated in the footer
 impressum_path: # set to path to include impressum link in the footer, use the same path as permalink in a page, helps to conform with EU GDPR
 back_to_top: true # set to false to disable the back to top button
@@ -64,7 +64,7 @@ max_width: 930px
 # see https://schema.org/docs/faq.html for more information
 serve_og_meta: true # Include Open Graph meta tags in the HTML head
 serve_schema_org: true # Include Schema.org in the HTML head
-og_image: https://athleticcoder21.github.io/kernels/assets/gemv/image1-v2.png
+og_image: https://athleticcoder21.github.io/inference-book/assets/gemv/image1-v2.png
 
 # -----------------------------------------------------------------------------
 # Analytics and search engine verification
@@ -85,7 +85,7 @@ bing_site_verification: # out your bing-site-verification ID (Bing Webmaster)
 # Blog
 # -----------------------------------------------------------------------------
 
-blog_name: Making Models Fast # blog_name will be displayed in your blog page
+blog_name: How to make your models fast # blog_name will be displayed in your blog page
 blog_description: a simple whitespace theme for academics
 permalink: /blog/:year/:title/
 lsi: false # produce an index for related posts

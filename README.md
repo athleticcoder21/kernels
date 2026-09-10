@@ -1,4 +1,4 @@
-# Making Models Fast
+# How to make your models fast
 
 **A Systems View of LLM Inference on GPUs**
 
@@ -10,10 +10,10 @@ The book is a standalone inference-optimization site built from the Scaling Book
 
 ```bash
 bundle install
-bundle exec jekyll serve
+bundle exec jekyll serve --baseurl ""
 ```
 
-Open `http://127.0.0.1:4000/kernels/` and start with the GEMV chapter. The site is rendered to `_site/`.
+Open `http://127.0.0.1:4000/` and start with the GEMV chapter. The production site is rendered with the `/inference-book` prefix and the generated files live in `_site/`.
 
 ## Current chapter
 

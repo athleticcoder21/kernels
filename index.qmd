@@ -4,7 +4,7 @@ description: "A work-in-progress book about understanding and optimizing LLM inf
 image: assets/gemv/image1-v2.png
 ---
 
-# Making Models Fast {.unnumbered}
+# How to make your models fast {.unnumbered}
 
 Inference optimization has a funny way of looking like black magic from the outside. Someone changes a memory layout, adds a strange-looking kernel, or flips a serving flag—and suddenly the same model runs twice as fast.
 
@@ -47,7 +47,7 @@ For each problem, we will try to leave with four things:
 - measurements we can challenge; and
 - a mental model worth carrying into the next problem.
 
-This book is a draft and will keep changing as I learn. If something is wrong, unclear, or suspiciously hand-wavy, [open an issue](https://github.com/athleticcoder21/kernels/issues). That is part of the process too.
+This book is a draft and will keep changing as I learn. If something is wrong, unclear, or suspiciously hand-wavy, [open an issue](https://github.com/athleticcoder21/inference-book/issues). That is part of the process too.
 
 ## The path through the book
 

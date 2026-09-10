@@ -25,7 +25,7 @@ toc:
   - name: Main takeaways
 ---
 
-The code for this chapter lives in [`gemv/`](https://github.com/athleticcoder21/kernels/tree/main/gemv).
+The code for this chapter lives in [`gemv/`](https://github.com/athleticcoder21/inference-book/tree/main/gemv).
 
 GEMV means GEneral Matrix Vector multiplication. Which is nothing but muliplication of a matrix with a Vector. 
 

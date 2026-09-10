@@ -1,0 +1,242 @@
+/*******************************************************************************
+ * How to make your models fast skin
+ *
+ * The Distill grid, navigation, contents rail, and responsive layout remain
+ * unchanged. These overrides reproduce the typography and restrained palette
+ * used on heyyanshuman.com while retaining the existing light/dark toggle.
+ ******************************************************************************/
+
+:root {
+  --book-heading-color: #202020;
+  --book-muted-color: rgba(40, 40, 40, 0.72);
+  --book-soft-color: rgba(40, 40, 40, 0.08);
+
+  --global-bg-color: #ffffff;
+  --global-code-bg-color: #f7f3ef;
+  --global-text-color: #282828;
+  --global-text-color-light: rgba(40, 40, 40, 0.72);
+  --global-theme-color: #e11d47;
+  --global-hover-color: #e11d47;
+  --global-hover-text-color: #ffffff;
+  --global-footer-bg-color: #ffffff;
+  --global-footer-text-color: rgba(40, 40, 40, 0.72);
+  --global-footer-link-color: #282828;
+  --global-underline-color: rgba(40, 40, 40, 0.35);
+  --global-distill-app-color: rgba(40, 40, 40, 0.72);
+  --global-divider-color: rgba(40, 40, 40, 0.1);
+  --global-card-bg-color: #ffffff;
+  --global-back-to-top-bg-color: rgba(40, 40, 40, 0.72);
+  --global-back-to-top-text-color: #ffffff;
+}
+
+html[data-theme="dark"] {
+  --book-heading-color: #f2efeb;
+  --book-muted-color: rgba(232, 228, 222, 0.72);
+  --book-soft-color: rgba(255, 255, 255, 0.1);
+
+  --global-bg-color: #1c1c1d;
+  --global-code-bg-color: #29292b;
+  --global-text-color: #e8e4de;
+  --global-text-color-light: rgba(232, 228, 222, 0.72);
+  --global-theme-color: #fb7185;
+  --global-hover-color: #fb7185;
+  --global-hover-text-color: #1c1c1d;
+  --global-footer-bg-color: #1c1c1d;
+  --global-footer-text-color: rgba(232, 228, 222, 0.72);
+  --global-footer-link-color: #e8e4de;
+  --global-underline-color: rgba(255, 255, 255, 0.35);
+  --global-distill-app-color: rgba(232, 228, 222, 0.72);
+  --global-divider-color: rgba(255, 255, 255, 0.12);
+  --global-card-bg-color: #222223;
+  --global-back-to-top-bg-color: rgba(232, 228, 222, 0.72);
+  --global-back-to-top-text-color: #1c1c1d;
+}
+
+html {
+  font-size: 17px;
+}
+
+body,
+button,
+input,
+select,
+textarea,
+.navbar,
+d-title,
+d-byline,
+d-article,
+d-appendix {
+  font-family: Georgia, "Times New Roman", Times, serif;
+}
+
+body {
+  color: var(--global-text-color);
+  background: var(--global-bg-color);
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 26px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+d-title h1,
+d-article h1,
+d-article h2,
+d-article h3,
+d-article h4,
+d-article h5,
+d-article h6 {
+  color: var(--book-heading-color) !important;
+  font-family: Georgia, "Times New Roman", Times, serif;
+  letter-spacing: 0;
+}
+
+d-title > p,
+d-byline,
+d-appendix {
+  color: var(--book-muted-color);
+}
+
+d-article p,
+d-article li {
+  line-height: 1.53;
+}
+
+d-article a,
+d-title a,
+.navbar a,
+footer a {
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+d-article blockquote {
+  color: var(--book-muted-color) !important;
+  border-left: 0.22rem solid var(--global-theme-color) !important;
+}
+
+d-article hr {
+  border-color: var(--book-soft-color) !important;
+}
+
+d-article table th,
+d-article table td {
+  border-color: var(--book-soft-color) !important;
+}
+
+code,
+pre,
+.highlight {
+  font-family: "SFMono-Regular", "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+}
+
+:not(pre) > code {
+  color: var(--global-text-color);
+  background: #dcdee5;
+  border-radius: 0.25rem;
+  padding: 0.15rem 0.25rem;
+}
+
+html[data-theme="dark"] :not(pre) > code {
+  color: var(--global-text-color);
+  background: #303034;
+}
+
+.highlighter-rouge > .highlight,
+.highlight > pre,
+pre.highlight {
+  color: #d4d4d4;
+  background: #1f1f1f;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.5rem;
+}
+
+.highlight > pre {
+  padding: 0.85rem 1rem;
+  font-size: 0.8rem;
+  line-height: 1.55;
+}
+
+.highlight code {
+  color: #d4d4d4 !important;
+  background: transparent !important;
+}
+
+.highlight code span {
+  color: #d4d4d4 !important;
+}
+
+.highlight .c,
+.highlight .c1,
+.highlight .cm,
+.highlight .cp,
+.highlight .cs {
+  color: #8f9ba8 !important;
+}
+
+.highlight .k,
+.highlight .kc,
+.highlight .kd,
+.highlight .kn,
+.highlight .kp,
+.highlight .kr,
+.highlight .kt {
+  color: #c586c0 !important;
+}
+
+.highlight .s,
+.highlight .s1,
+.highlight .s2,
+.highlight .sb,
+.highlight .sc,
+.highlight .sd,
+.highlight .se,
+.highlight .sh,
+.highlight .si,
+.highlight .sr,
+.highlight .ss,
+.highlight .sx {
+  color: #ce9178 !important;
+}
+
+.highlight .m,
+.highlight .mb,
+.highlight .mf,
+.highlight .mh,
+.highlight .mi,
+.highlight .mo,
+.highlight .il {
+  color: #b5cea8 !important;
+}
+
+.highlight .nf,
+.highlight .fm {
+  color: #dcdcaa !important;
+}
+
+.highlight .n,
+.highlight .na,
+.highlight .nb,
+.highlight .nc,
+.highlight .nd,
+.highlight .ne,
+.highlight .ni,
+.highlight .nl,
+.highlight .nn,
+.highlight .no,
+.highlight .nt,
+.highlight .nv,
+.highlight .o,
+.highlight .ow,
+.highlight .p {
+  color: #d4d4d4 !important;
+}
+
+d-article .callout {
+  background: color-mix(in srgb, var(--global-theme-color) 6%, var(--global-bg-color));
+}
+
+footer.fixed-bottom,
+footer.sticky-bottom {
+  border-top: 1px solid var(--global-divider-color);
+}

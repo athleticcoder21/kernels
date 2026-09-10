@@ -1,6 +1,6 @@
 ---
 layout: distill
-title: "Making Models Fast"
+title: "How to make your models fast"
 subtitle: "A systems view of LLM inference on GPUs"
 description: "A work-in-progress book for learning inference performance from first principles: kernels, memory traffic, transformer execution, and serving systems."
 date: 2026-09-10
