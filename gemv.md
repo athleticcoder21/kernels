@@ -6,8 +6,8 @@ date: 2026-09-10
 section_number: 1
 previous_section_url: ../index
 previous_section_name: "Part 0: Introduction"
-next_section_url: ../gemv
-next_section_name: "More chapters soon"
+next_section_url: ../softmax
+next_section_name: "Part 2: Making Softmax Fast"
 authors:
   - name: Anshuman Mishra
     url: https://heyyanshuman.com

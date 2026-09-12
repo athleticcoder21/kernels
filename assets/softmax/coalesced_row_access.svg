@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="720" viewBox="0 0 1400 720" role="img" aria-labelledby="title desc">
+  <title id="title">Coalesced row access for parallel Softmax</title>
+  <desc id="desc">A four-thread teaching block reads one row. On pass zero threads zero through three read columns zero through three. On pass one they read columns four through seven. Each pass accesses adjacent elements.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0 0L10 5 0 10z" fill="#0f766e"/></marker>
+    <style>.h{font:700 31px system-ui,sans-serif;fill:#102a43}.sub{font:400 17px system-ui,sans-serif;fill:#52606d}.lab{font:700 19px system-ui,sans-serif;fill:#102a43}.cell{font:700 18px system-ui,sans-serif;fill:#102a43;text-anchor:middle}.small{font:500 15px system-ui,sans-serif;fill:#486581;text-anchor:middle}.good{font:700 18px system-ui,sans-serif;fill:#047857;text-anchor:middle}</style>
+  </defs>
+  <rect width="1400" height="720" fill="#fbfdff"/>
+  <text x="70" y="58" class="h">Change who owns the row</text>
+  <text x="70" y="91" class="sub">Teaching example: T = 4 threads and N = 8 columns. A real warp uses T = 32.</text>
+
+  <text x="70" y="146" class="lab">Pass 0</text>
+  <g fill="#dbeafe" stroke="#2563eb" stroke-width="2"><rect x="220" y="116" width="130" height="78"/><rect x="350" y="116" width="130" height="78"/><rect x="480" y="116" width="130" height="78"/><rect x="610" y="116" width="130" height="78"/></g>
+  <g fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5"><rect x="740" y="116" width="130" height="78"/><rect x="870" y="116" width="130" height="78"/><rect x="1000" y="116" width="130" height="78"/><rect x="1130" y="116" width="130" height="78"/></g>
+  <g class="cell"><text x="285" y="162">x₀</text><text x="415" y="162">x₁</text><text x="545" y="162">x₂</text><text x="675" y="162">x₃</text><text x="805" y="162">x₄</text><text x="935" y="162">x₅</text><text x="1065" y="162">x₆</text><text x="1195" y="162">x₇</text></g>
+  <g class="small"><text x="285" y="220">thread 0</text><text x="415" y="220">thread 1</text><text x="545" y="220">thread 2</text><text x="675" y="220">thread 3</text></g>
+  <path d="M235 250H730" stroke="#0f766e" stroke-width="4" marker-end="url(#arrow)"/><text x="480" y="282" class="good">four neighboring threads → four neighboring elements</text>
+
+  <text x="70" y="366" class="lab">Pass 1</text>
+  <g fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5"><rect x="220" y="336" width="130" height="78"/><rect x="350" y="336" width="130" height="78"/><rect x="480" y="336" width="130" height="78"/><rect x="610" y="336" width="130" height="78"/></g>
+  <g fill="#dcfce7" stroke="#16a34a" stroke-width="2"><rect x="740" y="336" width="130" height="78"/><rect x="870" y="336" width="130" height="78"/><rect x="1000" y="336" width="130" height="78"/><rect x="1130" y="336" width="130" height="78"/></g>
+  <g class="cell"><text x="285" y="382">x₀</text><text x="415" y="382">x₁</text><text x="545" y="382">x₂</text><text x="675" y="382">x₃</text><text x="805" y="382">x₄</text><text x="935" y="382">x₅</text><text x="1065" y="382">x₆</text><text x="1195" y="382">x₇</text></g>
+  <g class="small"><text x="805" y="440">thread 0</text><text x="935" y="440">thread 1</text><text x="1065" y="440">thread 2</text><text x="1195" y="440">thread 3</text></g>
+  <path d="M755 470H1250" stroke="#0f766e" stroke-width="4" marker-end="url(#arrow)"/><text x="1000" y="502" class="good">the same threads move forward by T columns</text>
+
+  <rect x="130" y="560" width="1140" height="100" rx="18" fill="#ecfdf5" stroke="#a7f3d0" stroke-width="2"/>
+  <text x="700" y="600" class="good">column = thread_id + pass × T</text>
+  <text x="700" y="635" class="sub" text-anchor="middle">Each thread is strided over time, but the block is contiguous at every instant.</text>
+</svg>

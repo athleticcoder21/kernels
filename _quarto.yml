@@ -18,6 +18,7 @@ book:
     - part: "Kernels"
       chapters:
         - chapters/making-gemv-fast.qmd
+        - chapters/optimizing-softmax.qmd
 
 format:
   html:

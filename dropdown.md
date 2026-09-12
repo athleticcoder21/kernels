@@ -9,4 +9,6 @@ children:
     permalink: /index
   - title: Part 1. Making GEMV Fast
     permalink: /gemv
+  - title: Part 2. Making Softmax Fast
+    permalink: /softmax
 ---

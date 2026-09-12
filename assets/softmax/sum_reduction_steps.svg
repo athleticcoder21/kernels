@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="700" viewBox="0 0 1400 700" role="img" aria-labelledby="title desc">
+  <title id="title">Four-lane sum reduction in two rounds</title>
+  <desc id="desc">Four corrected partial sums are reduced. At offset two, lanes zero and one add values from lanes two and three. At offset one, lane zero adds lane one's result and obtains 1.5873.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0 0L10 5 0 10z" fill="#0f766e"/></marker>
+    <style>.h{font:700 31px system-ui,sans-serif;fill:#102a43}.sub{font:400 17px system-ui,sans-serif;fill:#52606d}.lane{font:700 16px system-ui,sans-serif;fill:#486581;text-anchor:middle}.v{font:700 20px ui-monospace,monospace;fill:#102a43;text-anchor:middle}.round{font:700 19px system-ui,sans-serif;fill:#102a43}.eq{font:500 17px ui-monospace,monospace;fill:#102a43}.good{font:700 21px system-ui,sans-serif;fill:#047857;text-anchor:middle}</style>
+  </defs>
+  <rect width="1400" height="700" fill="#fbfdff"/>
+  <text x="70" y="58" class="h">Reduce four corrected sums in two rounds</text>
+  <text x="70" y="91" class="sub">Only lane 0 needs the final answer. The other lanes help it get there.</text>
+
+  <text x="70" y="160" class="round">Start</text>
+  <g class="lane"><text x="350" y="142">lane 0</text><text x="590" y="142">lane 1</text><text x="830" y="142">lane 2</text><text x="1070" y="142">lane 3</text></g>
+  <g fill="#fef3c7" stroke="#d97706" stroke-width="2"><rect x="250" y="165" width="200" height="64" rx="12"/><rect x="490" y="165" width="200" height="64" rx="12"/><rect x="730" y="165" width="200" height="64" rx="12"/><rect x="970" y="165" width="200" height="64" rx="12"/></g>
+  <g class="v"><text x="350" y="205">1.0498</text><text x="590" y="205">0.1421</text><text x="830" y="205">0.3862</text><text x="1070" y="205">0.0092</text></g>
+
+  <text x="70" y="320" class="round">offset 2</text><text x="210" y="320" class="sub">lane 0 reads lane 2; lane 1 reads lane 3</text>
+  <path d="M830 238C790 280 430 280 390 238" fill="none" stroke="#0f766e" stroke-width="3" marker-end="url(#arrow)"/><path d="M1070 238C1030 310 670 310 630 238" fill="none" stroke="#0f766e" stroke-width="3" marker-end="url(#arrow)"/>
+  <g fill="#dcfce7" stroke="#16a34a" stroke-width="2"><rect x="370" y="350" width="270" height="72" rx="12"/><rect x="760" y="350" width="270" height="72" rx="12"/></g>
+  <text x="505" y="392" class="eq" text-anchor="middle">1.0498 + 0.3862 = 1.4360</text><text x="895" y="392" class="eq" text-anchor="middle">0.1421 + 0.0092 = 0.1513</text>
+
+  <text x="70" y="510" class="round">offset 1</text><text x="210" y="510" class="sub">lane 0 reads lane 1's partial result</text>
+  <path d="M895 432C860 500 600 500 555 432" fill="none" stroke="#0f766e" stroke-width="3" marker-end="url(#arrow)"/>
+  <rect x="500" y="535" width="400" height="82" rx="14" fill="#ccfbf1" stroke="#0f766e" stroke-width="2"/>
+  <text x="700" y="572" class="v">1.4360 + 0.1513</text><text x="700" y="601" class="good">row denominator = 1.5873</text>
+  <text x="700" y="665" class="sub" text-anchor="middle">A 32-lane warp follows the same pattern with offsets 16, 8, 4, 2, and 1.</text>
+</svg>
