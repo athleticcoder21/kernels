@@ -1,591 +1,656 @@
 <!DOCTYPE html>
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <!-- Metadata, OpenGraph and Schema.org -->
-
-
-
-
-<!-- Standard metadata -->
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>
-  
-  
-    How to make your models fast
-  
-</title>
-<meta name="author" content=" ">
-<meta name="description" content="A work-in-progress book for learning inference performance from first principles: kernels, memory traffic, transformer execution, and serving systems.">
+<meta name="generator" content="quarto-1.10.18">
 
-  <meta name="keywords" content="cuda, gpu, kernels, llm, inference, performance optimization">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Anshuman Mishra">
+<meta name="dcterms.date" content="2026-09-12">
+<meta name="description" content="A slowly growing book about reasoning through CUDA kernels from first principles.">
 
-
-
-
-
-  <!-- OpenGraph -->
-  <meta property="og:site_name" content="How to make your models fast">
-  <meta property="og:type" content="website">
-  <meta property="og:title" content="How to make your models fast">
-  <meta property="og:url" content="https://athleticcoder21.github.io/inference-book/">
-  <meta property="og:description" content="A work-in-progress book for learning inference performance from first principles: kernels, memory traffic, transformer execution, and serving systems.">
-  
-    <meta property="og:image" content="https://athleticcoder21.github.io/inference-book/assets/gemv/image1-v2.png">
-  
-  <meta property="og:locale" content="en">
-
-  <!-- Twitter card -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="How to make your models fast">
-  <meta name="twitter:description" content="A work-in-progress book for learning inference performance from first principles: kernels, memory traffic, transformer execution, and serving systems.">
-  
-    <meta name="twitter:image" content="https://athleticcoder21.github.io/inference-book/assets/gemv/image1-v2.png">
-  
-  
+<title>How to make your models fast</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
 
 
-
-  <!-- Schema.org -->
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-
-  <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "WebSite",
-        "url": "https://athleticcoder21.github.io/inference-book/",
-        "name": "How to make your models fast",
-        "headline": "How to make your models fast",
-        
-        "description": "A work-in-progress book for learning inference performance from first principles: kernels, memory traffic, transformer execution, and serving systems."
-    }
-  </script>
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./chapters/making-gemv-fast.html" rel="next">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-392eb0070ea7621f1172b9331af7fd2d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-4fc293a09fdbe0f1a179197bb2ff48e1.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
 
 
-
-<!-- Bootstrap & MDB -->
-<link rel="stylesheet" href="/inference-book/assets/css/bootstrap.min.css?a4b3f509e79c54a512b890d73235ef04">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdbootstrap@4.20.0/css/mdb.min.css" integrity="sha256-jpjYvU3G3N6nrrBwXJoVEYI/0zw8htfFnhT9ljN3JJw=" crossorigin="anonymous">
-
-
-
-<!-- Fonts & Icons -->
-<!-- Roboto is self-hosted (see _sass/_fonts.scss). Preload it so it's ready at
-     first paint; with font-display: optional a late font is skipped rather than
-     swapped in, so the page never reflows because of fonts. -->
-<link rel="preload" as="font" type="font/woff2" crossorigin href="/inference-book/assets/fonts/roboto/roboto-latin.woff2">
-<link defer rel="stylesheet" href="/inference-book/assets/css/academicons.min.css?f0b7046b84e425c55f3463ac249818f5">
-<link defer rel="stylesheet" href="/inference-book/assets/css/scholar-icons.css?62b2ac103a88034e6882a5be5f3e2772">
-
-<!-- Code Syntax Highlighting -->
-<link defer rel="stylesheet" href="/inference-book/assets/css/jekyll-pygments-themes-vs.css?4ee1a2facd1a8a76347f4bd43a740500" media="" id="highlight_theme_light">
-
-
-
-<!-- Styles -->
-
-
-
-
-  <link rel="icon" href="/inference-book/assets/img/favicon.ico?40fa984da00a7d776e79162fb29402f2" sizes="48x48">
-  <link rel="icon" type="image/png" href="/inference-book/assets/img/favicon-96x96.png?6fad83cd890cb60f9e27143afa90eefd" sizes="96x96">
-  <link rel="icon" type="image/png" href="/inference-book/assets/img/favicon-192x192.png?3fdfb758795130ba54a94ab468f6e7ec" sizes="192x192">
-  <link rel="apple-touch-icon" href="/inference-book/assets/img/apple-touch-icon.png?0e2a9fab4bca21b912aa5871abd33c2a">
-
-<link rel="stylesheet" href="/inference-book/assets/css/main.css?d41d8cd98f00b204e9800998ecf8427e">
-<link rel="canonical" href="https://athleticcoder21.github.io/inference-book/">
-
-<!-- Dark Mode -->
-<script src="/inference-book/assets/js/theme.js?9a0c749ec5240d9cda97bc72359a72c0"></script>
-
-  <link defer rel="stylesheet" href="/inference-book/assets/css/jekyll-pygments-themes-native.css?5847e5ed4a4568527aa6cfab446049ca" media="none" id="highlight_theme_dark">
-  <script>
-    initTheme();
-  </script>
-
-
-<!-- Set Tufte-mode class before first paint to avoid layout flicker -->
-<script>
-  try {
-    if (localStorage.getItem("tufte-sidenotes-enabled") === "1") {
-      document.documentElement.classList.add("tufte-mode");
-    }
-  } catch (e) {}
-</script>
-
-
-
-
-
-
-
-
-
-
-  <!-- Distill js -->
-  <script src="/inference-book/assets/js/distillpub/template.v2.js"></script>
-  <script src="/inference-book/assets/js/distillpub/transforms.v2.js"></script>
-  
 </head>
 
-<body>
-<d-front-matter>
-  <script async type="text/json">
-      {
-            "title": "How to make your models fast",
-            "description": "A work-in-progress book for learning inference performance from first principles: kernels, memory traffic, transformer execution, and serving systems.",
-            "published": "September 10, 2026",
-            "authors": [
-              
-              {
-                "author": "Anshuman Mishra",
-                "authorURL": "https://heyyanshuman.com",
-                "affiliations": [
-                  {
-                    "name": "Independent researcher",
-                    "url": ""
-                  }
-                ]
-              }
-              
-            ],
-            "katex": {
-              "delimiters": [
-                {
-                  "left": "$",
-                  "right": "$",
-                  "display": false
-                },
-                {
-                  "left": "$$",
-                  "right": "$$",
-                  "display": true
-                }
-              ]
-            }
-          }
-    </script>
-</d-front-matter>
+<body class="nav-sidebar floating quarto-light">
 
-
-  <!-- Header -->
-  <header>
-
-  <script>
-    function goToTop() {
-      document.body.scrollTop = 0; // For Safari
-      document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
-    }
-
-    // When the user scrolls down 20px from the top of the document, show the button
-    window.onscroll = function() {scrollFunction()};
-
-    function scrollFunction() {
-      // Get the button:
-      let mybutton = document.getElementById("top-button");
-      if (!mybutton) return;
-
-      if (document.body.scrollTop > 40 || document.documentElement.scrollTop > 40) {
-        mybutton.style.display = "block";
-      } else {
-        mybutton.style.display = "none";
-      }
-  }
-  </script>
-
-  <!-- Nav Bar -->
-  <nav id="navbar" class="navbar navbar-light navbar-expand-sm fixed-top" role="navigation">
-    <div class="container">
-      
-        <a class="navbar-brand title font-weight-lighter" href="/inference-book">
-          How to make your models fast
-        </a>
-      
-      <!-- Navbar Toggle -->
-      <button class="navbar-toggler collapsed ml-auto" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar top-bar"></span>
-        <span class="icon-bar middle-bar"></span>
-        <span class="icon-bar bottom-bar"></span>
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-
-      <div class="left-button section-button"><a href="./"><svg viewbox="-78.5 0 512 512"><path d="M257 64L291 98 128 262 291 426 257 460 61 262 257 64Z"></path></svg></a></div>
-      <div class="right-button section-button"><a href="gemv"><svg viewbox="-78.5 0 512 512"><path d="M98 460L64 426 227 262 64 98 98 64 294 262 98 460Z"></path></svg></a></div>
-
-      <div class="collapse navbar-collapse text-right" id="navbarNav">
-
-        <ul class="navbar-nav ml-auto flex-nowrap">
-          
-
-          <!-- About -->
-          <li class="nav-item ">
-            <a class="nav-link" href="/inference-book/">
-              
-            </a>
-          </li>
-
-      <li class="nav-item nav-hidden"><a class="nav-link" href="./">Previous Part</a></li>
-
-      <li class="nav-item nav-hidden"><a class="nav-link" href="gemv">Next Part</a></li>
- 
-          <!-- Other pages -->
-          
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-              
-                
-                
-                <li class="nav-item dropdown ">
-                  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <i class="ti ti-list dropdown-icon"></i>
-                    <span class="dropdown-text">Sections</span>
-                    
-                  </a>
-                  <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                    
-                      
-                        <a class="dropdown-item " href="/inference-book/index">Part 0. Introduction</a>
-                      
-                    
-                      
-                        <a class="dropdown-item " href="/inference-book/gemv">Part 1. Making GEMV Fast</a>
-                      
-                    
-                      
-                        <a class="dropdown-item " href="/inference-book/softmax">Part 2. Making Softmax Fast</a>
-                      
-                    
-                  </div>
-                </li>
-              
-            
-          
-          
-          
-            <!-- Toogle theme mode -->
-            <li class="toggle-container">
-              <!-- Inline SVGs (Tabler Icons) rather than the tabler-icons webfont so the
-                   icon is visible at first paint instead of popping in when the font loads. -->
-              <button id="light-toggle" title="Change theme">
-                <svg id="light-toggle-system" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.173 14.83a4 4 0 1 1 5.657 -5.657"></path><path d="M11.294 12.707l.174 .247a7.5 7.5 0 0 0 8.845 2.492a9 9 0 0 1 -14.671 2.914"></path><path d="M3 12h1"></path><path d="M12 3v1"></path><path d="M5.6 5.6l.7 .7"></path><path d="M3 21l18 -18"></path></svg>
-                <svg id="light-toggle-dark" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewbox="0 0 24 24" fill="currentColor"><path d="M12 1.992a10 10 0 1 0 9.236 13.838c.341 -.82 -.476 -1.644 -1.298 -1.31a6.5 6.5 0 0 1 -6.864 -10.787l.077 -.08c.551 -.63 .113 -1.653 -.758 -1.653h-.266l-.068 -.006l-.06 -.002z"></path></svg>
-                <svg id="light-toggle-light" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewbox="0 0 24 24" fill="currentColor"><path d="M12 19a1 1 0 0 1 .993 .883l.007 .117v1a1 1 0 0 1 -1.993 .117l-.007 -.117v-1a1 1 0 0 1 1 -1z"></path><path d="M18.313 16.91l.094 .083l.7 .7a1 1 0 0 1 -1.32 1.497l-.094 -.083l-.7 -.7a1 1 0 0 1 1.218 -1.567l.102 .07z"></path><path d="M7.007 16.993a1 1 0 0 1 .083 1.32l-.083 .094l-.7 .7a1 1 0 0 1 -1.497 -1.32l.083 -.094l.7 -.7a1 1 0 0 1 1.414 0z"></path><path d="M4 11a1 1 0 0 1 .117 1.993l-.117 .007h-1a1 1 0 0 1 -.117 -1.993l.117 -.007h1z"></path><path d="M21 11a1 1 0 0 1 .117 1.993l-.117 .007h-1a1 1 0 0 1 -.117 -1.993l.117 -.007h1z"></path><path d="M6.213 4.81l.094 .083l.7 .7a1 1 0 0 1 -1.32 1.497l-.094 -.083l-.7 -.7a1 1 0 0 1 1.217 -1.567l.102 .07z"></path><path d="M19.107 4.893a1 1 0 0 1 .083 1.32l-.083 .094l-.7 .7a1 1 0 0 1 -1.497 -1.32l.083 -.094l.7 -.7a1 1 0 0 1 1.414 0z"></path><path d="M12 2a1 1 0 0 1 .993 .883l.007 .117v1a1 1 0 0 1 -1.993 .117l-.007 -.117v-1a1 1 0 0 1 1 -1z"></path><path d="M12 7a5 5 0 1 1 -4.995 5.217l-.005 -.217l.005 -.217a5 5 0 0 1 4.995 -4.783z"></path></svg>
-              </button>
-            </li>
-          
-        </ul>
-      </div>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">How to make your models fast</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
     </div>
   </nav>
-  
-    <!-- Scrolling Progress Bar -->
-    <progress id="progress" value="0">
-      <div class="progress-container">
-        <span class="progress-bar"></span>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">How to make your models fast</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/athleticcoder21/inference-book" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+</div>
+    </div>
       </div>
-    </progress>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">How to make your models fast</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Kernels</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapters/making-gemv-fast.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Making GEMV Fast</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapters/optimizing-softmax.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Making Softmax Fast</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#how-to-make-your-models-fast" id="toc-how-to-make-your-models-fast" class="nav-link active" data-scroll-target="#how-to-make-your-models-fast">How to make your models fast</a>
+  <ul class="collapse">
+  <li><a href="#how-each-worklog-proceeds" id="toc-how-each-worklog-proceeds" class="nav-link" data-scroll-target="#how-each-worklog-proceeds">How each worklog proceeds</a></li>
+  <li><a href="#current-chapters" id="toc-current-chapters" class="nav-link" data-scroll-target="#current-chapters">Current chapters</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/athleticcoder21/inference-book/edit/main/index.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/athleticcoder21/inference-book/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">How to make your models fast</h1>
+<p class="subtitle lead">CUDA kernel worklogs for understanding inference performance</p>
+</div>
+
+<div>
+  <div class="description">
+    A slowly growing book about reasoning through CUDA kernels from first principles.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p><a href="https://heyyanshuman.com">Anshuman Mishra</a> </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">September 12, 2026</p>
+    </div>
+  </div>
   
+    
+  </div>
+  
+
+
 </header>
 
 
-  <!-- Content -->
-  <div class="post distill">
-
-    <d-title>
-      <h1>How to make your models fast</h1>
-      
-      <p><span class="subtitle">A systems view of LLM inference on GPUs</span> <span class="subtitle-links">( | <a href="gemv">Part 1: Making GEMV Fast</a>)</span></p>
-      
-      <p>A work-in-progress book for learning inference performance from first principles: kernels, memory traffic, transformer execution, and serving systems.</p>
-    </d-title>
-
-    
-    <!-- Pre-render the byline server-side so it's visible at first paint. The distill JS
-         re-renders it from <d-front-matter> on DOMContentLoaded, so the markup here must
-         mirror bylineTemplate() in assets/js/distillpub/template.v2.js exactly. -->
-    
-    <d-byline>
-      <div class="byline grid">
-        <div class="authors-affiliations grid">
-          <h3 style="grid-column: 1; grid-row: 1;">Authors</h3>
-          <h3></h3>
-          <h3>Affiliation</h3>
-          
-          
-          
-          <p class="author" style="grid-column: 1; grid-row: 2;">
-            <a class="name" href="https://heyyanshuman.com" rel="external nofollow noopener" target="_blank">Anshuman Mishra</a>
-          </p>
-          <p class="affiliation" style="grid-column: 3; grid-row: 2;">
-            <span class="affiliation">Independent researcher</span>
-          </p>
-          
-        </div>
-        <div>
-          <h3>Published</h3>
-          <!-- Match the AP-style month abbreviations in template.v2.js's `months` array. -->
-          
-          
-          <p>Sept. 10, 2026</p>
-        </div>
-      </div>
-    </d-byline>
-    
-
-    <d-article>
-      
-      <d-contents>
-        <nav class="l-text figcaption">
-          <h3>Contents</h3>
-          
-          <div>
-            <a href="#the-question">The question</a>
-          </div>
-          
-          
-          <div>
-            <a href="#how-the-book-grows">How the book grows</a>
-          </div>
-          
-          
-        </nav>
-      </d-contents>
-      
-      <h2 id="the-question">The question</h2>
-
-<p>Inference optimization is not magic. Every performance result is a consequence
-of computation, memory traffic, communication, and how an algorithm maps onto
-the hardware underneath it.</p>
-
-<p>This book develops a practical way to answer one question:</p>
-
-<blockquote>
-  <p>What is stopping this workload from going faster—compute, memory,
-communication, or the way it is mapped onto the GPU?</p>
-</blockquote>
-
-<p>Each chapter starts with a model of the work, follows it with a runnable
-implementation, and then uses measurements to challenge that model. The code
-lives beside the writing so the reasoning can be inspected and reproduced.</p>
-
-<h2 id="how-the-book-grows">How the book grows</h2>
-
-<p>The structure moves from a single GPU outward:</p>
-
-<ol>
-  <li>
-<strong>Kernels</strong> — memory layout, warp execution, tiling, and reductions.</li>
-  <li>
-<strong>Transformer inference</strong> — attention, MLPs, prefill, decode, and KV caches.</li>
-  <li>
-<strong>Serving systems</strong> — batching, scheduling, quantization, and latency versus throughput.</li>
-  <li>
-<strong>Scaling out</strong> — parallelism, communication, and fleet-level efficiency.</li>
+<section id="how-to-make-your-models-fast" class="level1 unnumbered">
+<h1 class="unnumbered">How to make your models fast</h1>
+<p>I am learning how to make model inference faster by starting at the lowest level I can reasonably reach: individual CUDA kernels.</p>
+<p>This book is a slowly growing compilation of those worklogs. For now, its scope is deliberately narrow. We write one kernel, count its computation and memory traffic, inspect how its threads use the GPU, and then improve it one bottleneck at a time.</p>
+<p>This is not meant to be a broad guide to every layer of model scaling. There is no large roadmap that I am promising to fill in. I will add a chapter when I have learned enough to explain the problem honestly and work through an implementation.</p>
+<section id="how-each-worklog-proceeds" class="level2">
+<h2 class="anchored" data-anchor-id="how-each-worklog-proceeds">How each worklog proceeds</h2>
+<p>Every chapter follows roughly the same loop:</p>
+<ol type="1">
+<li>Write the most straightforward implementation.</li>
+<li>Count its FLOPs, memory traffic, and arithmetic intensity.</li>
+<li>Look at what a warp actually computes and reads.</li>
+<li>Change one part of the algorithm or its mapping to the GPU.</li>
+<li>Recalculate the cost and write the improved kernel.</li>
 </ol>
-
-<p>Only finished chapters appear in the navigation. Start with
-<a href="gemv">Part 1: Making GEMV Fast</a>.</p>
-
-    </d-article>
-
-    <d-appendix>
-      <d-footnote-list></d-footnote-list>
-      <d-citation-list></d-citation-list>
-      <div class="base-grid appendix-entry">
-  <h3 style="grid-column: 0;">Citation</h3>
-  <p class="author-footnote">For attribution in academic contexts, please cite this work as:</p>
-
-  <div class="author-footnote">
-  
-  <div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    Mishra, Anshuman. "How to make your models fast." Online, 2026.
-</code></pre></div></div>
-
-  </div>
-
-  <p class="author-footnote">or as a BibTeX entry:</p>
-
-  <div class="author-footnote">
-  
-  <div class="language-bibtex highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nc">@book</span><span class="p">{</span><span class="nl">how-to-make-your-models-fast</span><span class="p">,</span>
-      <span class="na">title</span> <span class="p">=</span> <span class="s">{How to make your models fast}</span><span class="p">,</span>
-      <span class="na">author</span> <span class="p">=</span> <span class="s">{Mishra, Anshuman}</span><span class="p">,</span>
-      <span class="na">howpublished</span> <span class="p">=</span> <span class="s">{Online}</span><span class="p">,</span>
-      <span class="na">url</span> <span class="p">=</span> <span class="s">{https://athleticcoder21.github.io/inference-book/}</span><span class="p">,</span>
-      <span class="na">year</span> <span class="p">=</span> <span class="s">{2026}</span>
-    <span class="p">}</span>
-</code></pre></div></div>
-
-  </div>
-
-</div>
-
-    </d-appendix>
-
-    <d-bibliography src="/inference-book/assets/bibliography/"></d-bibliography>
-
-    
-    
-  </div>
-
-  <!-- Footer -->
-  
-  <footer class="sticky-bottom mt-5" role="contentinfo">
-    
-
-    <div class="container">
-      © Copyright 2026
-      
-      
-      . How to make your models fast by Anshuman Mishra.
-
-      
-      
-    </div>
-  </footer>
-
-
-
-  <!-- JavaScripts -->
-  <!-- jQuery -->
-<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-
-<!-- Bootsrap & MDB scripts -->
-<script src="/inference-book/assets/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.20.0/js/mdb.min.js" integrity="sha256-NdbiivsvWt7VYCt6hYNT3h/th9vSTL4EDWeGs5SN3DA=" crossorigin="anonymous"></script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  <!-- Medium Zoom JS -->
-  <script defer src="https://cdn.jsdelivr.net/npm/medium-zoom@1.1.0/dist/medium-zoom.min.js" integrity="sha256-ZgMyDAIYDYGxbcpJcfUnYwNevG/xi9OHKaR/8GK+jWc=" crossorigin="anonymous"></script>
-  <script defer src="/inference-book/assets/js/zoom.js?85ddb88934d28b74e78031fd54cf8308"></script>
-
-
-
-
-
-
-<!-- Load Common JS -->
-<script src="/inference-book/assets/js/no_defer.js?2781658a0a2b13ed609542042a859126"></script>
-<script defer src="/inference-book/assets/js/common.js?e0514a05c5c95ac1a93a8dfd5249b92e"></script>
-<script defer src="/inference-book/assets/js/copy_code.js?12775fdf7f95e901d7119054556e495f" type="text/javascript"></script>
-
-<!-- Jupyter Open External Links New Tab -->
-<script defer src="/inference-book/assets/js/jupyter_new_tab.js?d9f17b6adc2311cbabd747f4538bb15f"></script>
-
-<!-- Tufte-style margin sidenotes for d-footnote -->
-<script defer src="/inference-book/assets/js/sidenotes.js?5488feda9017667a4b53f647c3851cee"></script>
-
-<!-- Removed Badges -->
-
-
-  <!-- MathJax -->
-  <script defer type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" integrity="sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI=" crossorigin="anonymous"></script>
-  <script src="/inference-book/assets/js/mathjax-setup.js?70d799092f862ad98c7876aa47712e20"></script>
-  <script defer src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6" crossorigin="anonymous"></script>
-  <!-- Removed Pseudocode -->
-
-
-
-
-
-
-
-
-
-  <!-- Scrolling Progress Bar -->
-  <script defer src="/inference-book/assets/js/progress-bar.js?2f30e0e6801ea8f5036fa66e1ab0a71a" type="text/javascript"></script>
-
-
-
-
-
-
-
-  <!-- Back to Top -->
-  <script src="/inference-book/assets/js/vanilla-back-to-top.min.js?f40d453793ff4f64e238e420181a1d17"></script>
-  <script>
-    addBackToTop();
+<p>The intermediate versions stay in the chapter. The point is not only to arrive at fast code, but to make the reasoning that led there reusable.</p>
+</section>
+<section id="current-chapters" class="level2">
+<h2 class="anchored" data-anchor-id="current-chapters">Current chapters</h2>
+<p><a class="chapter-card" href="chapters/making-gemv-fast.html"> <span class="chapter-card__eyebrow">Chapter 1 · Kernels</span> <strong>Making GEMV Fast</strong> <span>One matrix, one vector, and an access pattern that quietly wastes most of the GPU’s memory bandwidth.</span> <span class="chapter-card__link">Read the chapter →</span> </a></p>
+<p><a class="chapter-card" href="chapters/optimizing-softmax.html"> <span class="chapter-card__eyebrow">Chapter 2 · Kernels</span> <strong>Making Softmax Fast</strong> <span>From a direct row-wise implementation to online statistics, coalesced reads, and warp reductions.</span> <span class="chapter-card__link">Read the chapter →</span> </a></p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
   </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./chapters/making-gemv-fast.html" class="pagination-link" aria-label="Making GEMV Fast">
+        <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Making GEMV Fast</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
 
 
 
 
-
-
-
-
-</body>
-</html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/athleticcoder21/inference-book/edit/main/index.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/athleticcoder21/inference-book/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><script src="site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>
