@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="760" viewBox="0 0 1400 760" role="img" aria-labelledby="title desc">
+  <title id="title">Local online Softmax statistics for four threads</title>
+  <desc id="desc">Four threads process an eight-element row. Each thread reads two elements and computes a local maximum and a local denominator.</desc>
+  <defs><style>.h{font:700 31px system-ui,sans-serif;fill:#102a43}.sub{font:400 17px system-ui,sans-serif;fill:#52606d}.th{font:700 20px system-ui,sans-serif;fill:#102a43;text-anchor:middle}.v{font:600 18px ui-monospace,monospace;fill:#102a43;text-anchor:middle}.s{font:400 16px system-ui,sans-serif;fill:#486581;text-anchor:middle}.stat{font:700 17px system-ui,sans-serif;fill:#047857;text-anchor:middle}</style></defs>
+  <rect width="1400" height="760" fill="#fbfdff"/>
+  <text x="70" y="58" class="h">Each thread builds a partial Softmax summary</text>
+  <text x="70" y="91" class="sub">Worked row: x = [3, 1, 2, 0, 6, 4, 5, 1]. Four threads each process two values.</text>
+
+  <g stroke-width="2">
+    <rect x="70" y="145" width="285" height="470" rx="18" fill="#dbeafe" stroke="#2563eb"/>
+    <rect x="395" y="145" width="285" height="470" rx="18" fill="#ecfdf5" stroke="#059669"/>
+    <rect x="720" y="145" width="285" height="470" rx="18" fill="#fef3c7" stroke="#d97706"/>
+    <rect x="1045" y="145" width="285" height="470" rx="18" fill="#f3e8ff" stroke="#9333ea"/>
+  </g>
+  <g class="th"><text x="212" y="188">thread 0</text><text x="537" y="188">thread 1</text><text x="862" y="188">thread 2</text><text x="1187" y="188">thread 3</text></g>
+  <g class="s"><text x="212" y="220">columns 0 and 4</text><text x="537" y="220">columns 1 and 5</text><text x="862" y="220">columns 2 and 6</text><text x="1187" y="220">columns 3 and 7</text></g>
+  <g class="v"><text x="212" y="272">[3, 6]</text><text x="537" y="272">[1, 4]</text><text x="862" y="272">[2, 5]</text><text x="1187" y="272">[0, 1]</text></g>
+  <g class="s"><text x="212" y="322">local maximum</text><text x="537" y="322">local maximum</text><text x="862" y="322">local maximum</text><text x="1187" y="322">local maximum</text></g>
+  <g class="v"><text x="212" y="354">m₀ = 6</text><text x="537" y="354">m₁ = 4</text><text x="862" y="354">m₂ = 5</text><text x="1187" y="354">m₃ = 1</text></g>
+  <g class="s"><text x="212" y="406">local denominator</text><text x="537" y="406">local denominator</text><text x="862" y="406">local denominator</text><text x="1187" y="406">local denominator</text></g>
+  <g class="v"><text x="212" y="440">e⁻³ + 1</text><text x="537" y="440">e⁻³ + 1</text><text x="862" y="440">e⁻³ + 1</text><text x="1187" y="440">e⁻¹ + 1</text></g>
+  <g class="stat"><text x="212" y="484">L₀ ≈ 1.0498</text><text x="537" y="484">L₁ ≈ 1.0498</text><text x="862" y="484">L₂ ≈ 1.0498</text><text x="1187" y="484">L₃ ≈ 1.3679</text></g>
+  <g class="s"><text x="212" y="548">summary: (6, 1.0498)</text><text x="537" y="548">summary: (4, 1.0498)</text><text x="862" y="548">summary: (5, 1.0498)</text><text x="1187" y="548">summary: (1, 1.3679)</text></g>
+  <rect x="170" y="655" width="1060" height="62" rx="16" fill="#fff7ed" stroke="#fdba74" stroke-width="2"/>
+  <text x="700" y="693" class="stat">These four sums cannot be added yet: each one is relative to a different maximum.</text>
+</svg>

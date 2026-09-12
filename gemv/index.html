@@ -252,7 +252,7 @@
       </button>
 
       <div class="left-button section-button"><a href="../index"><svg viewbox="-78.5 0 512 512"><path d="M257 64L291 98 128 262 291 426 257 460 61 262 257 64Z"></path></svg></a></div>
-      <div class="right-button section-button"><a href="../gemv"><svg viewbox="-78.5 0 512 512"><path d="M98 460L64 426 227 262 64 98 98 64 294 262 98 460Z"></path></svg></a></div>
+      <div class="right-button section-button"><a href="../softmax"><svg viewbox="-78.5 0 512 512"><path d="M98 460L64 426 227 262 64 98 98 64 294 262 98 460Z"></path></svg></a></div>
 
       <div class="collapse navbar-collapse text-right" id="navbarNav">
 
@@ -268,10 +268,12 @@
 
       <li class="nav-item nav-hidden"><a class="nav-link" href="../index">Previous Part</a></li>
 
-      <li class="nav-item nav-hidden"><a class="nav-link" href="../gemv">Next Part</a></li>
+      <li class="nav-item nav-hidden"><a class="nav-link" href="../softmax">Next Part</a></li>
  
           <!-- Other pages -->
           
+          
+            
           
             
           
@@ -305,6 +307,10 @@
                     
                       
                         <a class="dropdown-item " href="/inference-book/gemv">Part 1. Making GEMV Fast</a>
+                      
+                    
+                      
+                        <a class="dropdown-item " href="/inference-book/softmax">Part 2. Making Softmax Fast</a>
                       
                     
                   </div>
@@ -346,7 +352,7 @@
     <d-title>
       <h1>Making GEMV Fast</h1>
       
-      <p>Part 1 of <a href="/inference-book">How to make your models fast</a> (<a href="../index">Part 0: Introduction</a> | <a href="../gemv">More chapters soon</a>)</p>
+      <p>Part 1 of <a href="/inference-book">How to make your models fast</a> (<a href="../index">Part 0: Introduction</a> | <a href="../softmax">Part 2: Making Softmax Fast</a>)</p>
       
       <p>A worklog on optimizing matrix-vector multiplication in CUDA by reasoning about arithmetic intensity, memory transactions, and warp-level access patterns.</p>
     </d-title>

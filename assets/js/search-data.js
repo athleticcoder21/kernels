@@ -23,6 +23,13 @@ ninja.data = [{
               handler: () => {
                 window.location.href = "";
               },
+            },{id: "dropdown-part-2-making-softmax-fast",
+              title: "Part 2. Making Softmax Fast",
+              description: "",
+              section: "Dropdown",
+              handler: () => {
+                window.location.href = "";
+              },
             },{
       id: 'light-theme',
       title: 'Change theme to light',
