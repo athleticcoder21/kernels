@@ -4,7 +4,7 @@ project:
 
 book:
   title: "How to make your models fast"
-  subtitle: "A Systems View of LLM Inference on GPUs"
+  subtitle: "CUDA Kernel Worklogs for LLM Inference"
   author:
     - name: Anshuman Mishra
       url: https://heyyanshuman.com
